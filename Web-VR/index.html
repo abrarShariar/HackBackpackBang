@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>360&deg; Image Gallery</title>
+    <meta name="description" content="360&deg; Image Gallery - A-Frame">
+    <script src="https://aframe.io/releases/0.3.0/aframe.min.js"></script>
+    <script src="https://npmcdn.com/aframe-animation-component@3.0.1"></script>
+    <script src="https://npmcdn.com/aframe-event-set-component@3.0.1"></script>
+    <script src="https://npmcdn.com/aframe-layout-component@3.0.1"></script>
+    <script src="https://npmcdn.com/aframe-template-component@3.0.1"></script>
+    <script src="components/set-image.js"></script>
+    <script src="components/update-raycaster.js"></script>
+
+    <script>
+        const xhttp = new XMLHttpRequest();
+        var recentData = [];
+        xhttp.onreadystatechange = function(){
+            if(this.readyState == 4 && this.status == 200){
+                let object = JSON.parse(this.response);
+                object.map((item)=>{
+                    let obj = {
+                        name: item['name'],
+                        image: item['image'],
+                        totalPrice: item['totalPrice']
+                    }
+                    console.log(obj.image);
+                    recentData.push(obj);
+                })
+
+                /*
+                setTimeout(()=>{
+                    recentData.map((item,index)=>{
+                        var asset = document.querySelector('a-assets');
+                        var temp = index+1;
+                        asset.querySelector("#thumb"+temp).src = "img/thumb"+temp+'.jpg';
+                    })
+                },1000)
+                */
+            }
+        }
+        xhttp.open("GET", "http://localhost:5000/api/recent");
+        xhttp.send();
+    </script>
+
+  </head>
+  <body>
+    <a-scene>
+      <a-assets class="assets">
+        <img id="kieran" src="img/backpacklogo.png">
+
+        <!--neo thumbs items-->
+        <!--<img id="neo1" crossorigin="anonymous" src="./img/neo1.jpg">-->
+        <!--<img id="neo2" crossorigin="anonymous" src="./img/neo2.jpg">-->
+        <!--<img id="neo3" crossorigin="anonymous" src="./img/neo3.jpg">-->
+        <!--<img id="neo4" crossorigin="anonymous" src="./img/neo4.jpg">-->
+        <!--<img id="neo5" crossorigin="anonymous" src="./img/neo5.jpg">-->
+        <!--<img id="neo6" crossorigin="anonymous" src="./img/neo6.jpg">-->
+        <!--<img id="neo7" crossorigin="anonymous" src="./img/neo7.jpg">-->
+        <!--<img id="neo8" crossorigin="anonymous" src="./img/neo8.jpg">-->
+        <!--<img id="neo9" crossorigin="anonymous" src="./img/backpacklogo.png">-->
+        <!--<img id="neo10" crossorigin="anonymous" src="./img/neo10.jpg">-->
+        <!--<img id="neo11" crossorigin="anonymous" src="./img/neo11.jpg">-->
+        <!--<img id="neo12" crossorigin="anonymous" src="./img/neo12.jpg">-->
+
+        <!--popular items -->
+        <img id="pop1" crossorigin="anonymous" src="./img/pop1.jpg">
+        <img id="pop2" crossorigin="anonymous" src="./img/pop2.jpg">
+        <img id="pop3" crossorigin="anonymous" src="./img/pop3.jpg">
+        <img id="pop4" crossorigin="anonymous" src="./img/pop4.jpg">
+        <img id="pop5" crossorigin="anonymous" src="./img/pop5.jpg">
+        <img id="pop6" crossorigin="anonymous" src="./img/pop6.jpg">
+        <img id="pop7" crossorigin="anonymous" src="./img/pop7.jpg">
+        <img id="pop8" crossorigin="anonymous" src="./img/pop8.jpg">
+        <img id="pop9" crossorigin="anonymous" src="./img/pop9.jpg">
+        <img id="pop10" crossorigin="anonymous" src="./img/pop10.jpg">
+        <img id="pop11" crossorigin="anonymous" src="./img/pop11.jpg">
+        <img id="pop12" crossorigin="anonymous" src="./img/pop12.jpg">
+
+
+        <!--images for recent items-->
+        <img id="thumb1" crossorigin="anonymous" src="./img/thumb1.jpg">
+        <img id="thumb2" crossorigin="anonymous" src="./img/thumb2.jpg">
+        <img id="thumb3" crossorigin="anonymous" src="./img/thumb3.jpg">
+        <img id="thumb4" crossorigin="anonymous" src="./img/thumb4.jpg">
+        <img id="thumb5" crossorigin="anonymous" src="./img/thumb5.jpg">
+        <img id="thumb6" crossorigin="anonymous" src="./img/thumb6.jpg">
+        <img id="thumb7" crossorigin="anonymous" src="./img/thumb7.jpg">
+        <img id="thumb8" crossorigin="anonymous" src="./img/thumb8.jpg">
+        <img id="thumb9" crossorigin="anonymous" src="./img/backpacklogo.png">
+        <img id="thumb10" crossorigin="anonymous" src="./img/thumb10.jpg">
+        <img id="thumb11" crossorigin="anonymous" src="./img/thumb11.jpg">
+        <img id="thumb12" crossorigin="anonymous" src="./img/thumb12.jpg">
+
+
+        <audio id="click-sound" crossorigin="anonymous" src="https://cdn.aframe.io/360-image-gallery-boilerplate/audio/click.ogg"></audio>
+        <img id="christian" crossorigin="anonymous" src="img/2.jpg">
+        <img id="eddie" crossorigin="anonymous" src="img/4.jpg">
+
+        <!-- Image link template to be reused. -->
+        <script id="link" type="text/nunjucks">
+          <a-plane class="link" height="1" width="1"
+            material="shader: flat; src: {{ thumb }}"
+            event-set__1="_event: mousedown; scale: 1 1 1"
+            event-set__2="_event: mouseup; scale: 1.2 1.2 1"
+            event-set__3="_event: mouseenter; scale: 1.2 1.2 1"
+            event-set__4="_event: mouseleave; scale: 1 1 1"
+            set-image="on: click; target: #image-360; src: {{ src }}"
+            sound="on: click; src: #click-sound"
+            update-raycaster="#cursor"></a-plane>
+        </script>
+      </a-assets>
+      <!-- 360-degree image. -->
+      <a-sky id="image-360" radius="10" src="#kieran"></a-sky>
+
+      <!--images to be displayed on the left side-->
+      <a-entity scale="1 1 1" gearvr-controls id="links" layout="type: line; margin: 1.5" position="0 5 -3" rotation="0 90 0">
+        <a-entity template="src: #link" data-src="#pop1" data-thumb="#pop1"></a-entity>
+        <a-entity template="src: #link" data-src="#pop2" data-thumb="#pop2"></a-entity>
+        <a-entity template="src: #link" data-src="#pop3" data-thumb="#pop3"></a-entity>
+        <a-entity template="src: #link" data-src="#pop4" data-thumb="#pop4"></a-entity>
+      </a-entity>
+
+      <!--images to be displayed on the right side-->
+      <a-entity scale="1 1 1" gearvr-controls id="links" layout="type: line; margin: 2" position="7 0 -3" rotation="0 -90 0">
+        <a-entity template="src: #link" data-src="#pop1" data-thumb="#pop1"></a-entity>
+        <a-entity template="src: #link" data-src="#pop2" data-thumb="#pop2"></a-entity>
+        <a-entity template="src: #link" data-src="#pop3" data-thumb="#pop3"></a-entity>
+        <a-entity template="src: #link" data-src="#pop4" data-thumb="#pop4"></a-entity>
+      </a-entity>
+
+      <!--images to be displayed on the right side-->
+      <a-entity scale="1 1 1" gearvr-controls id="links" layout="type: line; margin: 2" position="7 2 -3" rotation="0 -90 0">
+        <a-entity template="src: #link" data-src="#thumb9" data-thumb="#thumb9"></a-entity>
+        <a-entity template="src: #link" data-src="#thumb10" data-thumb="#thumb10"></a-entity>
+        <a-entity template="src: #link" data-src="#thumb11" data-thumb="#thumb11"></a-entity>
+        <a-entity template="src: #link" data-src="#thumb12" data-thumb="#thumb12"></a-entity>
+      </a-entity>
+
+      <!--images to be displayed on the right side-->
+      <a-entity scale="1 1 1" gearvr-controls id="links" layout="type: line; margin: 2" position="7 -2 -3" rotation="0 -90 0">
+        <a-entity template="src: #link" data-src="#thumb5" data-thumb="#thumb5"></a-entity>
+        <a-entity template="src: #link" data-src="#thumb6" data-thumb="#thumb6"></a-entity>
+        <a-entity template="src: #link" data-src="#thumb7" data-thumb="#thumb7"></a-entity>
+        <a-entity template="src: #link" data-src="#thumb8" data-thumb="#thumb8"></a-entity>
+      </a-entity>
+
+      <!--popular items-->
+      <a-entity scale="1 1 1" gearvr-controls id="links" layout="type: line; margin: 1.5" position="-6 2 -3">
+        <a-entity template="src: #link" data-src="#pop1" data-thumb="#pop1"></a-entity>
+        <a-entity template="src: #link" data-src="#pop2" data-thumb="#pop2"></a-entity>
+        <a-entity template="src: #link" data-src="#pop3" data-thumb="#pop3"></a-entity>
+        <a-entity template="src: #link" data-src="#pop4" data-thumb="#pop4"></a-entity>
+      </a-entity>
+
+      <a-entity scale="1 1 1" gearvr-controls id="links" layout="type: line; margin: 1.5" position="-6 0 -3">
+        <a-entity template="src: #link" data-src="#pop5" data-thumb="#pop5"></a-entity>
+        <a-entity template="src: #link" data-src="#pop6" data-thumb="#pop6"></a-entity>
+        <a-entity template="src: #link" data-src="#pop7" data-thumb="#pop7"></a-entity>
+        <a-entity template="src: #link" data-src="#pop8" data-thumb="#pop8"></a-entity>
+      </a-entity>
+
+      <a-entity  scale="1 1 1" gearvr-controls id="links" layout="type: line; margin: 1.5" position="-6 -2 -3">
+        <a-entity template="src: #link" data-src="#pop9" data-thumb="#pop9"></a-entity>
+        <a-entity template="src: #link" data-src="#pop10" data-thumb="#pop10"></a-entity>
+        <a-entity template="src: #link" data-src="#pop11" data-thumb="#pop11"></a-entity>
+        <a-entity template="src: #link" data-src="#pop12" data-thumb="#pop12"></a-entity>
+      </a-entity>
+
+
+      <!--recent items-->
+      <a-entity  scale="1 1 1" gearvr-controls id="links" layout="type: line; margin: 1.5" position="0 2 -3">
+        <a-entity template="src: #link" data-src="#thumb1" data-thumb="#thumb1"></a-entity>
+        <a-entity template="src: #link" data-src="#thumb2" data-thumb="#thumb2"></a-entity>
+        <a-entity template="src: #link" data-src="#thumb3" data-thumb="#thumb3"></a-entity>
+        <a-entity template="src: #link" data-src="#thumb4" data-thumb="#thumb4"></a-entity>
+      </a-entity>
+      <!-- Image links. -->
+      <a-entity  scale="1 1 1" gearvr-controls id="links" layout="type: line; margin: 1.5" position="0 0 -3">
+        <a-entity template="src: #link" data-src="#thumb5" data-thumb="#thumb5"></a-entity>
+        <a-entity template="src: #link" data-src="#thumb6" data-thumb="#thumb6"></a-entity>
+        <a-entity template="src: #link" data-src="#thumb7" data-thumb="#thumb7"></a-entity>
+        <a-entity template="src: #link" data-src="#thumb8" data-thumb="#thumb8"></a-entity>
+      </a-entity>
+
+      <a-entity  scale="1 1 1"  gearvr-controls id="links" layout="type: line; margin: 1.5" position="0 -2 -3">
+        <a-entity template="src: #link" data-src="#thumb9" data-thumb="#thumb9"></a-entity>
+        <a-entity template="src: #link" data-src="#thumb10" data-thumb="#thumb10"></a-entity>
+        <a-entity template="src: #link" data-src="#thumb11" data-thumb="#thumb11"></a-entity>
+        <a-entity template="src: #link" data-src="#thumb12" data-thumb="#thumb12"></a-entity>
+      </a-entity>
+
+      <!-- Camera + cursor. -->
+      <a-entity  scale="1 1 1" camera  gearvr-controls look-controls>
+        <a-cursor id="cursor"
+          animation__click="property: scale; startEvents: click; from: 0.1 0.1 0.1; to: 1 1 1; dur: 150"
+          animation__fusing="property: fusing; startEvents: fusing; from: 1 1 1; to: 0.1 0.1 0.1; dur: 1500"
+          event-set__1="_event: mouseenter; color: springgreen"
+          event-set__2="_event: mouseleave; color: black"
+          raycaster="objects: .link"></a-cursor>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
